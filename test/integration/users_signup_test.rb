@@ -15,4 +15,18 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     assert_select 'div#error_explanation'
     assert_select 'form[action="/signup"]'
   end
+  
+  test "User should be added to database if given valid inputs" do
+    get signup_path
+    assert_difference 'User.count', 1 do 
+      post signup_path, params: { user: { name:  "example user",
+                                        email: "user@example.com",
+                                        password:              "foobar22",
+                                        password_confimation:  "foobar22"} }
+    end
+    follow_redirect!
+    assert_template 'users/show'
+    assert flash[:success]  ##should be changed to assert_not flash.empty?
+  end
+  
 end
